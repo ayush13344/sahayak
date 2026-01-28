@@ -1,0 +1,31 @@
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+
+    role: {
+      type: String,
+      enum: ["user", "service_provider", "admin"],
+      default: "user",
+    },
+
+    // Partner-related (filled after verification)
+    serviceType: String,
+    phone: String,
+    isPartnerVerified: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
+userSchema.methods.comparePassword=function(password){
+    return bcrypt.compareSync(password,this.password);
+}
+
+
+export default mongoose.model("User", userSchema);
